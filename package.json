@@ -1,0 +1,29 @@
+{
+  "name": "servermanager",
+  "version": "1.0.0",
+  "description": "Server Manager for Onder Discord Comunity",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^12.0.1",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OnderCrew/ServerManager.git"
+  },
+  "author": "OnderCrew / PMH",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OnderCrew/ServerManager/issues"
+  },
+  "homepage": "https://github.com/OnderCrew/ServerManager#readme"
+}

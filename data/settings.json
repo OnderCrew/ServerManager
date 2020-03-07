@@ -1,0 +1,15 @@
+{
+  "basic": {
+    "token": "Njg1NzI0MDE0MzcwNjE5NDcz.XmM0Vg.xB0E6K9Ag7TOSaehcKCdliFGYFw"
+  },
+  "guild": "668789720397905941",
+  "roles": {
+    "canWarn": "685823736674385940",
+    "canBan": "685724543654166539"
+  },
+  "channels": {
+    "report": "685724394823483496",
+    "warning": "685724375294803981",
+    "suggestion": "685724422941704202"
+  }
+}
