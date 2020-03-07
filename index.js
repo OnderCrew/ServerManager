@@ -81,6 +81,7 @@ bot.on('message', (msg) => {
           const embed = new MessageEmbed()
             .setTitle(locales.warningTitle.replace('%username', target.username))
             .addField(locales.warningLocation, '<#' + msg.channel.id + '>')
+            .addField(locales.warningTotal.replace('%username', target.username), locales.warningTotalContent.replace('%count', warnings[target.id]))
             .setColor(0xFF6F53)
             .setTimestamp()
             .setFooter(targetGuild.name)
@@ -150,6 +151,37 @@ bot.on('message', (msg) => {
             })
         }
       }
+      break
+    }
+
+    case locales.supportCommand: {
+      if (argument.length < 1) {
+        const embed = new MessageEmbed()
+          .setTitle(locales.supportCommandArgumentsFail)
+          .addField(locales.supportCommandHelp, locales.supportCommandHelpContent)
+          .setColor(0xff0000)
+
+        msg.channel.send(embed)
+          .then((m) => {
+            if (msg.deletable) msg.delete({ timeout: 5000 }).then(fnull)
+            m.delete({ timeout: 5000 }).then(fnull)
+          })
+      } else {
+        targetGuild.channels.resolve(settings.channels.support)
+          .send('<@&' + settings.roles.reportNoti + '>\n\n' +
+            locales.supportContent.replace('%content', argument.join(' '))
+              .replace('%usermention', '<@' + msg.author.id + '>'))
+
+        const successEmbed = new MessageEmbed()
+          .setColor(0x00ff00)
+          .setTitle(locales.supportCommandSuccess)
+        msg.channel.send(successEmbed)
+          .then((m) => {
+            if (msg.deletable) msg.delete({timeout: 5000}).then(fnull)
+            m.delete({timeout: 5000}).then(fnull)
+          })
+      }
+      break
     }
   }
 })
