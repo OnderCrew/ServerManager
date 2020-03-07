@@ -7,12 +7,12 @@ const locales = require('./data/locales.json')
 
 let targetGuild
 const bot = new Client()
-bot.login(settings.basic.token)
+bot.login(settings.basic.token).then(fnull)
 
 bot.on('ready', () => {
   console.log(locales.readyMessage)
   targetGuild = bot.guilds.resolve(settings.guild)
-  bot.user.setActivity(locales.activity.replace('%usercount', targetGuild.memberCount), { type: 'WATCHING' })
+  bot.user.setActivity(locales.activity.replace('%usercount', targetGuild.memberCount), { type: 'WATCHING' }).then(fnull)
   targetGuild.members.cache.forEach((member) => {
     if (!Object.keys(warnings).includes(member.id)) warnings[member.id] = 0
     if (warnings[member.id] === 3) {
@@ -48,8 +48,8 @@ bot.on('message', (msg) => {
 
         msg.channel.send(embed)
           .then((m) => {
-            if (msg.deletable) msg.delete({ timeout: 5000 })
-            m.delete({ timeout: 5000 })
+            if (msg.deletable) msg.delete({ timeout: 5000 }).then(fnull)
+            m.delete({ timeout: 5000 }).then(fnull)
           })
       } else if (argument.length < 1) {
         const embed = new MessageEmbed()
@@ -59,8 +59,8 @@ bot.on('message', (msg) => {
 
         msg.channel.send(embed)
           .then((m) => {
-            if (msg.deletable) msg.delete({ timeout: 5000 })
-            m.delete({ timeout: 5000 })
+            if (msg.deletable) msg.delete({ timeout: 5000 }).then(fnull)
+            m.delete({ timeout: 5000 }).then(fnull)
           })
       } else {
         let target = msg.mentions.users.first()
@@ -73,8 +73,8 @@ bot.on('message', (msg) => {
 
           msg.channel.send(embed)
             .then((m) => {
-              if (msg.deletable) msg.delete({ timeout: 5000 })
-              m.delete({ timeout: 5000 })
+              if (msg.deletable) msg.delete({ timeout: 5000 }).then(fnull)
+              m.delete({ timeout: 5000 }).then(fnull)
             })
         } else {
           warnings[target.id]++
@@ -85,7 +85,7 @@ bot.on('message', (msg) => {
             .setTimestamp()
             .setFooter(targetGuild.name)
 
-          if (argument[1]) embed.addField(locales.warningReason, argument[1])
+          if (argument[1]) embed.addField(locales.warningReason, argument.slice(1).join(' '))
 
           targetGuild.channels.resolve(settings.channels.warning)
             .send({ content: '<@' + target.id + '>', embed: embed.toJSON() })
@@ -96,8 +96,57 @@ bot.on('message', (msg) => {
             .setTitle(locales.warningCommandSuccess)
           msg.channel.send(successEmbed)
             .then((m) => {
-              if (msg.deletable) msg.delete({ timeout: 5000 })
-              m.delete({ timeout: 5000 })
+              if (msg.deletable) msg.delete({ timeout: 5000 }).then(fnull)
+              m.delete({ timeout: 5000 }).then(fnull)
+            })
+        }
+      }
+      break
+    }
+
+    case locales.reportCommand: {
+      if (argument.length < 2) {
+        const embed = new MessageEmbed()
+          .setTitle(locales.reportCommandArgumentsFail)
+          .addField(locales.reportCommandHelp, locales.reportCommandHelpContent)
+          .setColor(0xff0000)
+
+        msg.channel.send(embed)
+          .then((m) => {
+            if (msg.deletable) msg.delete({ timeout: 5000 }).then(fnull)
+            m.delete({ timeout: 5000 }).then(fnull)
+          })
+      } else {
+        let target = msg.mentions.users.first()
+        if (!target) target = targetGuild.member(argument[0])
+        if (!target) {
+          const embed = new MessageEmbed()
+            .setTitle(locales.reportCommandInvaildMember.replace('%username', argument[0]))
+            .setDescription(locales.reportCommandInvaildMemberDescrption)
+            .setColor(0xff0000)
+
+          msg.channel.send(embed)
+            .then((m) => {
+              if (msg.deletable) msg.delete({ timeout: 5000 }).then(fnull)
+              m.delete({ timeout: 5000 }).then(fnull)
+            })
+        } else {
+          const embed = new MessageEmbed()
+            .setColor(0xffffff)
+            .setTitle(locales.reportTitle.replace('%username', target.username))
+            .setDescription(argument.slice(1).join(' '))
+            .setFooter(locales.reportFrom.replace('%channelname', msg.channel.name).replace('%username', msg.author.username))
+
+          targetGuild.channels.resolve(settings.channels.report)
+            .send({ content: '<@&' + settings.roles.reportNoti + '>', embed: embed.toJSON() })
+
+          const successEmbed = new MessageEmbed()
+            .setColor(0x00ff00)
+            .setTitle(locales.reportCommandSuccess)
+          msg.channel.send(successEmbed)
+            .then((m) => {
+              if (msg.deletable) msg.delete({timeout: 5000}).then(fnull)
+              m.delete({timeout: 5000}).then(fnull)
             })
         }
       }
