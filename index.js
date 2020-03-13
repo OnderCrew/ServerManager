@@ -4,6 +4,7 @@ const { Client, MessageEmbed } = require('discord.js')
 const settings = require('./data/settings.json')
 const warnings = require('./data/warnings.json')
 const locales = require('./data/locales.json')
+const customs = require('./data/customs.json')
 
 let targetGuild
 const bot = new Client()
@@ -146,8 +147,8 @@ bot.on('message', (msg) => {
             .setTitle(locales.reportCommandSuccess)
           msg.channel.send(successEmbed)
             .then((m) => {
-              if (msg.deletable) msg.delete({timeout: 5000}).then(fnull)
-              m.delete({timeout: 5000}).then(fnull)
+              if (msg.deletable) msg.delete({ timeout: 5000 }).then(fnull)
+              m.delete({ timeout: 5000 }).then(fnull)
             })
         }
       }
@@ -177,11 +178,22 @@ bot.on('message', (msg) => {
           .setTitle(locales.supportCommandSuccess)
         msg.channel.send(successEmbed)
           .then((m) => {
-            if (msg.deletable) msg.delete({timeout: 5000}).then(fnull)
-            m.delete({timeout: 5000}).then(fnull)
+            if (msg.deletable) msg.delete({ timeout: 5000 }).then(fnull)
+            m.delete({ timeout: 5000 }).then(fnull)
           })
       }
       break
+    }
+
+    default: {
+      const query = customs.find((e) => e.input === targetCmd)
+      if (query) {
+        const result = query.output
+          .replace('%username', msg.author.username)
+          .replace('%userid', msg.author.id)
+          .replace('%usermention', '<@' + msg.author.id + '>')
+        msg.channel.send(result).then(fnull)
+      }
     }
   }
 })
