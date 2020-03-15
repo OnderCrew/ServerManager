@@ -188,6 +188,7 @@ bot.on('message', (msg) => {
     default: {
       const query = customs.find((e) => e.input === targetCmd)
       if (query) {
+        if (query.deleteInput) msg.delete()
         const result = query.output
           .replace('%username', msg.author.username)
           .replace('%userid', msg.author.id)
